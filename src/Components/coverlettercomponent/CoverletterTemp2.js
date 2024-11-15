@@ -210,7 +210,7 @@ const CoverletterTemp2 = () => {
       </div>
 
       {/* Download button */}
-      <button onClick={downloadPDF} className="download-button">Download PDF</button>
+      <button onClick={downloadPDF} className="download-button"> Download Cover Letter as PDF</button>
     </div>
   );
 };

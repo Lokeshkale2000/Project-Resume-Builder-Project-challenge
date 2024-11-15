@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './CoverletterTemp3.css';  // Import the separate CSS file
+import html2pdf from 'html2pdf.js'; // Import html2pdf
+
+import './CoverletterTemp3.css';
 
 const Coverlettertemp3 = () => {
   const [contacts, setContacts] = useState([]);
@@ -9,6 +11,7 @@ const Coverlettertemp3 = () => {
   const [openingTexts, setOpeningTexts] = useState([]);
   const [letterBody, setLetterBody] = useState('');
   const [conclusion, setConclusion] = useState('');
+
   const [loadingState, setLoadingState] = useState({
     contacts: true,
     recipients: true,
@@ -17,6 +20,7 @@ const Coverlettertemp3 = () => {
     letterBody: true,
     conclusion: true,
   });
+
   const [errorState, setErrorState] = useState({
     contacts: null,
     recipients: null,
@@ -27,50 +31,49 @@ const Coverlettertemp3 = () => {
     global: null,
   });
 
-  // Fetch all data concurrently
-  const fetchData = async () => {
-    try {
-      const responses = await Promise.all([
-        axios.get('http://localhost:5000/contacts'),
-        axios.get('http://localhost:5000/recipient'),
-        axios.get('http://localhost:5000/subjects'),
-        axios.get('http://localhost:5000/opening-text'),
-        axios.get('http://localhost:5000/letters'),
-        axios.get('http://localhost:5000/conclusion'),
-      ]);
-
-      setContacts(responses[0].data);
-      setRecipients(responses[1].data);
-      setSubjects(responses[2].data);
-      setOpeningTexts(responses[3].data);
-      setLetterBody(responses[4].data[0].letterBodyText);
-      setConclusion(responses[5].data[0].conclusion);
-
-      setLoadingState({
-        contacts: false,
-        recipients: false,
-        subjects: false,
-        openingTexts: false,
-        letterBody: false,
-        conclusion: false,
-      });
-    } catch (error) {
-      setErrorState({
-        ...errorState,
-        global: error.message || 'Error fetching all data',
-      });
-      setLoadingState({
-        contacts: false,
-        recipients: false,
-        subjects: false,
-        openingTexts: false,
-        letterBody: false,
-        conclusion: false,
-      });
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [contactsRes, recipientsRes, subjectsRes, openingTextsRes, letterBodyRes, conclusionRes] = await Promise.all([
+          axios.get('http://localhost:5000/contacts'),
+          axios.get('http://localhost:5000/recipient'),
+          axios.get('http://localhost:5000/subjects'),
+          axios.get('http://localhost:5000/opening-text'),
+          axios.get('http://localhost:5000/letters'),
+          axios.get('http://localhost:5000/conclusion'),
+        ]);
+
+        setContacts(contactsRes.data);
+        setRecipients(recipientsRes.data);
+        setSubjects(subjectsRes.data);
+        setOpeningTexts(openingTextsRes.data);
+        setLetterBody(letterBodyRes.data[0]?.letterBodyText || '');
+        setConclusion(conclusionRes.data[0]?.conclusion || '');
+
+        setLoadingState({
+          contacts: false,
+          recipients: false,
+          subjects: false,
+          openingTexts: false,
+          letterBody: false,
+          conclusion: false,
+        });
+      } catch (error) {
+        setErrorState((prevState) => ({
+          ...prevState,
+          global: error.message || 'Error fetching all data',
+        }));
+        setLoadingState({
+          contacts: false,
+          recipients: false,
+          subjects: false,
+          openingTexts: false,
+          letterBody: false,
+          conclusion: false,
+        });
+      }
+    };
+
     fetchData();
   }, []);
 
@@ -81,9 +84,40 @@ const Coverlettertemp3 = () => {
     return renderContent();
   };
 
+  const downloadPDF = async () => {
+    const element = document.getElementById("cover-letter-content");
+
+    const options = {
+      margin: 10,
+      filename: 'cover_letter.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 4 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+
+    // Generate PDF
+    html2pdf().from(element).set(options).save();
+
+    // After downloading the PDF, delete data using multiple API calls
+    try {
+      await Promise.all([
+        axios.delete('http://localhost:5000/deleteContact'),
+        axios.delete('http://localhost:5000/recipient'),
+        axios.delete('http://localhost:5000/subjects'),
+        axios.delete('http://localhost:5000/opening-text'),
+        axios.delete('http://localhost:5000/letters'),
+        axios.delete('http://localhost:5000/conclusion')
+      ]);
+      console.log('Data deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting data:', error.message);
+    }
+  };
+
   return (
     <div className="cover-letter-container-temp3">
-      <div className="coverlettermain-container-flex-temp3">
+      <div id="cover-letter-content" className="coverlettermain-container-flex-temp3">
+        {/* Contacts Section */}
         <div className="contacts-section-temp3">
           {renderSection(
             loadingState.contacts,
@@ -94,7 +128,9 @@ const Coverlettertemp3 = () => {
               <ul>
                 {contacts.map((contact) => (
                   <li key={contact._id || contact.phone}>
-                    <h1 style={{padding:"8px auto",color:"blue"}}>{contact.firstName} {contact.lastName}</h1>
+                    <h1 style={{ padding: '8px auto', color: 'blue' }}>
+                      {contact.firstName} {contact.lastName}
+                    </h1>
                     <div className="contact-details-temp3">
                       <strong>Phone:</strong> {contact.phone} <br />
                       <strong>Email:</strong> {contact.email} <br />
@@ -108,6 +144,7 @@ const Coverlettertemp3 = () => {
         </div>
 
         <div className="other-sections-temp3">
+          {/* Subjects Section */}
           <div className="subjects-section-temp3">
             {renderSection(
               loadingState.subjects,
@@ -118,7 +155,9 @@ const Coverlettertemp3 = () => {
                 <ul>
                   {subjects.map((subject) => (
                     <li key={subject._id || subject.subjectName}>
-                      <p style={{textAlign:"justify",padding:"5px auto"}}><strong>Subject:</strong> {subject.subjectName}</p>
+                      <p style={{ textAlign: 'justify', padding: '5px auto' }}>
+                        <strong>Subject:</strong> {subject.subjectName}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -126,6 +165,7 @@ const Coverlettertemp3 = () => {
             )}
           </div>
 
+          {/* Recipients Section */}
           <div className="recipients-section-temp3">
             {renderSection(
               loadingState.recipients,
@@ -136,7 +176,9 @@ const Coverlettertemp3 = () => {
                 <ul>
                   {recipients.map((recipient) => (
                     <li key={recipient._id || recipient.firstName}>
-                      <p style={{textAlign:"justify"}}><strong>Dear:</strong> {recipient.firstName} {recipient.lastName}</p>
+                      <p style={{ textAlign: 'justify' }}>
+                        <strong>Dear:</strong> {recipient.firstName} {recipient.lastName}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -144,6 +186,7 @@ const Coverlettertemp3 = () => {
             )}
           </div>
 
+          {/* Opening Texts Section */}
           <div className="opening-texts-section-temp3">
             {renderSection(
               loadingState.openingTexts,
@@ -153,25 +196,25 @@ const Coverlettertemp3 = () => {
               () => (
                 <ul>
                   {openingTexts.map((text) => (
-                    <li key={text._id || text.openingText}>
-                      {text.openingText}
-                    </li>
+                    <li key={text._id || text.openingText}>{text.openingText}</li>
                   ))}
                 </ul>
               )
             )}
           </div>
 
+          {/* Letter Body Section */}
           <div className="letter-body-section-temp3">
             {loadingState.letterBody ? (
               <div className="loading">Loading...</div>
             ) : errorState.letterBody ? (
               <div className="error">{errorState.letterBody}</div>
             ) : (
-              <p style={{textAlign:"justify"}}>{letterBody}</p>
+              <p style={{ textAlign: 'justify' }}>{letterBody}</p>
             )}
           </div>
 
+          {/* Conclusion Section */}
           <div className="conclusion-section-temp3">
             {loadingState.conclusion ? (
               <div className="loading">Loading...</div>
@@ -182,14 +225,19 @@ const Coverlettertemp3 = () => {
             )}
           </div>
 
-          <div className="sincerely-section-temp3">
-            <h3 style={{color:"blue"}}>Sincerely,</h3>
+          {/* Footer */}
+          <div className="footer-section-temp3">
+            <p>Sincerely,</p>
             {contacts.length > 0 && (
-              <p style={{color:"blue"}}>{contacts[0].firstName} {contacts[0].lastName}</p>
+              <p>{contacts[0].firstName} {contacts[0].lastName}</p>
             )}
           </div>
         </div>
       </div>
+
+      <button onClick={downloadPDF} className="download-button" style={{ marginTop: "24px" }}>
+        Download Cover Letter as PDF
+      </button>
     </div>
   );
 };
