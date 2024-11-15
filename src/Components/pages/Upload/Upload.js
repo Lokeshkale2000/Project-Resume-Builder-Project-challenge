@@ -7,7 +7,7 @@ import './Upload.css';
 const Upload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -25,7 +25,7 @@ const Upload = () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post(' http://localhost:5000/upload' , formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -46,7 +46,6 @@ const Upload = () => {
     document.getElementById('fileInput').value = '';
   };
 
-  // Navigate to Cover Letter page
   const handleNewCoverLetter = () => {
     navigate('/cover-letter');
   };
@@ -63,6 +62,9 @@ const Upload = () => {
             onChange={handleFileChange}
             className="file-input"
           />
+          <label htmlFor="fileInput" className="file-input-label">
+            Select File
+          </label>
           <button onClick={handleResetFile} className='upload-change-btn'>
             Change File
           </button>

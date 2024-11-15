@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import html2pdf from 'html2pdf.js';
 import './CoverletterTemp2.css';
 
 const CoverletterTemp2 = () => {
@@ -81,117 +82,135 @@ const CoverletterTemp2 = () => {
     return renderContent();
   };
 
+  // Download handler
+  const downloadPDF = () => {
+    const element = document.querySelector('.cover-letter-container-temp2');
+    html2pdf()
+      .set({
+        filename: 'Cover_Letter.pdf',
+        html2canvas: { scale: 2 }, // Increase quality
+        jsPDF: { format: 'a4', orientation: 'portrait' },
+      })
+      .from(element)
+      .save();
+  };
+
   return (
-    <div className="cover-letter-container-temp2">
-      <div className="coverlettermain-container-flex-temp2">
-        {/* Merged contact and other sections */}
-        <div className="contact-details-temp2">
-          {renderSection(
-            loadingState.contacts,
-            errorState.contacts,
-            contacts,
-            'No contacts available',
-            () => (
-              <div>
-                {contacts.length > 0 && (
-                  <div>
-                    <h1 style={{ border:"1px solid green",padding:"10px 240px",fontSize:"28px", background:"blue"}}>{contacts[0].firstName} {contacts[0].lastName}</h1>
+    <div>
+      <div className="cover-letter-container-temp2">
+        <div className="coverlettermain-container-flex-temp2">
+          {/* Merged contact and other sections */}
+          <div className="contact-details-temp2">
+            {renderSection(
+              loadingState.contacts,
+              errorState.contacts,
+              contacts,
+              'No contacts available',
+              () => (
+                <div>
+                  {contacts.length > 0 && (
                     <div>
-                      <strong>Phone:</strong> {contacts[0].phone} <br />
-                      <strong>Email:</strong> {contacts[0].email} <br />
-                      <strong>Address:</strong> {contacts[0].city}, {contacts[0].state}
+                      <h1 style={{ border:"1px solid green",padding:"10px 240px",fontSize:"28px", background:"blue"}}>{contacts[0].firstName} {contacts[0].lastName}</h1>
+                      <div>
+                        <strong>Phone:</strong> {contacts[0].phone} <br />
+                        <strong>Email:</strong> {contacts[0].email} <br />
+                        <strong>Address:</strong> {contacts[0].city}, {contacts[0].state}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )
-          )}
-        </div>
-
-        {/* Render other sections like subjects, recipients, letter body */}
-        <div className="other-sections-temp2">
-          <div className="subjects-section-temp2">
-            {renderSection(
-              loadingState.subjects,
-              errorState.subjects,
-              subjects,
-              'No subjects available',
-              () => (
-                <ul>
-                  {subjects.map((subject) => (
-                    <li key={subject._id || subject.subjectName}>
-                      <p style={{textAlign:"justify"}}><strong>Subject:</strong> {subject.subjectName}</p>
-                    </li>
-                  ))}
-                </ul>
+                  )}
+                </div>
               )
             )}
           </div>
 
-          <div className="recipients-section-temp2">
-            {renderSection(
-              loadingState.recipients,
-              errorState.recipients,
-              recipients,
-              'No recipients available',
-              () => (
-                <ul>
-                  {recipients.map((recipient) => (
-                    <li key={recipient._id || recipient.firstName}>
-                      <p  style={{textAlign:"justify"}}><strong>Dear:</strong> {recipient.firstName} {recipient.lastName}</p>
-                    </li>
-                  ))}
-                </ul>
-              )
-            )}
-          </div>
+          {/* Render other sections like subjects, recipients, letter body */}
+          <div className="other-sections-temp2">
+            <div className="subjects-section-temp2">
+              {renderSection(
+                loadingState.subjects,
+                errorState.subjects,
+                subjects,
+                'No subjects available',
+                () => (
+                  <ul>
+                    {subjects.map((subject) => (
+                      <li key={subject._id || subject.subjectName}>
+                        <p style={{textAlign:"justify"}}><strong>Subject:</strong> {subject.subjectName}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )
+              )}
+            </div>
 
-          <div className="opening-texts-section-temp2">
-            {renderSection(
-              loadingState.openingTexts,
-              errorState.openingTexts,
-              openingTexts,
-              'No opening texts available',
-              () => (
-                <ul>
-                  {openingTexts.map((text) => (
-                    <li key={text._id || text.openingText}>
-                      {text.openingText}
-                    </li>
-                  ))}
-                </ul>
-              )
-            )}
-          </div>
+            <div className="recipients-section-temp2">
+              {renderSection(
+                loadingState.recipients,
+                errorState.recipients,
+                recipients,
+                'No recipients available',
+                () => (
+                  <ul>
+                    {recipients.map((recipient) => (
+                      <li key={recipient._id || recipient.firstName}>
+                        <p style={{textAlign:"justify"}}><strong>Dear:</strong> {recipient.firstName} {recipient.lastName}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )
+              )}
+            </div>
 
-          <div className="letter-body-section-temp2">
-            {loadingState.letterBody ? (
-              <div className="loading">Loading...</div>
-            ) : errorState.letterBody ? (
-              <div className="error">{errorState.letterBody}</div>
-            ) : (
-              <p style={{textAlign:"justify",padding:"0 16px"}}>{letterBody}</p>
-            )}
-          </div>
+            <div className="opening-texts-section-temp2">
+              {renderSection(
+                loadingState.openingTexts,
+                errorState.openingTexts,
+                openingTexts,
+                'No opening texts available',
+                () => (
+                  <ul>
+                    {openingTexts.map((text) => (
+                      <li key={text._id || text.openingText}>
+                        {text.openingText}
+                      </li>
+                    ))}
+                  </ul>
+                )
+              )}
+            </div>
 
-          <div className="conclusion-section-temp2">
-            {loadingState.conclusion ? (
-              <div className="loading">Loading...</div>
-            ) : errorState.conclusion ? (
-              <div className="error">{errorState.conclusion}</div>
-            ) : (
-              <p style={{textAlign:"justify",padding:"0 16px"}}>{conclusion}</p>
-            )}
-          </div>
+            <div className="letter-body-section-temp2">
+              {loadingState.letterBody ? (
+                <div className="loading">Loading...</div>
+              ) : errorState.letterBody ? (
+                <div className="error">{errorState.letterBody}</div>
+              ) : (
+                <p style={{textAlign:"justify",padding:"0 16px"}}>{letterBody}</p>
+              )}
+            </div>
 
-          <div className="sincerely-section-temp2">
-            <h3 style={{marginLeft:"90px"}}>Sincerely,</h3>
-            {contacts.length > 0 && (
-              <p  style={{textAlign:"justify",marginLeft:"90px"}}>{contacts[0].firstName} {contacts[0].lastName}</p>
-            )}
+            <div className="conclusion-section-temp2">
+              {loadingState.conclusion ? (
+                <div className="loading">Loading...</div>
+              ) : errorState.conclusion ? (
+                <div className="error">{errorState.conclusion}</div>
+              ) : (
+                <p style={{textAlign:"justify",padding:"0 16px"}}>{conclusion}</p>
+              )}
+            </div>
+
+            <div className="sincerely-section-temp2">
+              <h3 style={{marginLeft:"90px"}}>Sincerely,</h3>
+              {contacts.length > 0 && (
+                <p style={{textAlign:"justify",marginLeft:"90px"}}>{contacts[0].firstName} {contacts[0].lastName}</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Download button */}
+      <button onClick={downloadPDF} className="download-button">Download PDF</button>
     </div>
   );
 };

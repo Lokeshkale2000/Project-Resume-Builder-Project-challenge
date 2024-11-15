@@ -28,7 +28,16 @@ import TemplateDetails1 from "./Components/coverlettercomponent/CoverletterTemp1
 import TemplateDetails2 from "./Components/coverlettercomponent/CoverletterTemp2";
 import TemplateDetails3 from "./Components/coverlettercomponent/CoverletterTemp3";
 import TemplateDetails4 from "./Components/coverlettercomponent/CoverletterTemp4";
-import Upload from './Components/pages/Upload/Upload';
+import Upload from "./Components/pages/Upload/Upload";
+import PaymentUi from "./Components/pages/Payment/PaymentUi/PaymentUi";
+import HomePage from "./pages/HomePage";
+import ExperiencePage from "./pages/ExperiencePage";
+import StudentPage from "./pages/StudentPage";
+import EducationPage from "./pages/EducationPage";
+import TemplatePage from "./pages/TemplatePage";
+import SelectResumePage from "./pages/SelectResumePage";
+import UploadResumePage from "./pages/UploadResumePage";
+import ResumeBuilder from "./resume/ResumeBuilder";
 
 function App() {
   const location = useLocation(); // Get the current route path
@@ -72,13 +81,21 @@ function App() {
         <Route path="/opening-page" element={<Opening />} />
 
         <Route path="/closing-page" element={<Conclusion />} />
-
+        <Route path="/payment" element={<PaymentUi />} />
         <Route path="/tempmanager" element={<TemplateManager />}></Route>
         <Route path="/template/1" element={<TemplateDetails1 />} />
         <Route path="/template/2" element={<TemplateDetails2 />} />
         <Route path="/template/3" element={<TemplateDetails3 />} />
         <Route path="/template/4" element={<TemplateDetails4 />} />
-        <Route path="/upload" element={<Upload/>} />
+        <Route path="/upload" element={<Upload />} />
+        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/experience" element={<ExperiencePage />} />
+        <Route path="/student" element={<StudentPage />} />
+        <Route path="/education" element={<EducationPage />} />
+        <Route path="/templates" element={<TemplatePage />} />
+        <Route path="/select-resume" element={<SelectResumePage />} />
+        <Route path="/upload-resume" element={<UploadResumePage />} />
+        <Route path="/resume-editing" element={<ResumeBuilder />} />
       </Routes>
     </>
   );

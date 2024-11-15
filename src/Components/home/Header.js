@@ -48,50 +48,7 @@ const Header = () => {
         <div className="nav-left"></div>
         <div className="nav-links">
           {/* Tools Dropdown */}
-          <div className="nav-item">
-            <span className="nav-link" onClick={toggleToolsCard}>
-              Tools <span className="dropdown-icon">▼</span>
-            </span>
-            {showToolsCard && (
-              <div className="tools-card">
-                <div className="tool-item">
-                  <img src="coverletter.png" alt="Resume Builder" />
-                  <div>
-                    <strong>Resume Builder</strong>
-                    <p>Create a resume in 5 minutes. Get the job you want.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="Resume Checker" />
-                  <div>
-                    <strong>Resume Checker</strong>
-                    <p>Get your resume checked and scored with one click.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="CV Maker" />
-                  <div>
-                    <strong>CV Maker</strong>
-                    <p>Create a CV in 5 minutes. Get the job you want.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="Cover Letter Builder" />
-                  <div>
-                    <strong>Cover Letter Builder</strong>
-                    <p>
-                      Write a cover letter that convinces employers you're the
-                      best.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
+       
           {/* Resume Dropdown */}
           <div className="nav-item">
             <span className="nav-link" onClick={toggleResumeCard}>
@@ -144,46 +101,31 @@ const Header = () => {
             </span>
             {showCv && (
               <div className="tools-card">
-                <div className="tool-item">
-                  <img src="coverletter.png" alt="CV Builder" />
-                  <div>
-                    <strong>CV Builder</strong>
-                    <p>Create a CV in 5 minutes. Get the job you want.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="CV Examples" />
-                  <div>
-                    <strong>CV Examples</strong>
-                    <p>See perfect CV samples that get jobs.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="CV Format" />
-                  <div>
-                    <strong>CV Format</strong>
-                    <p>Pick the right format for your situation.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="How to write a CV" />
-                  <div>
-                    <strong>How to Write a CV</strong>
-                    <p>Learn how to make a CV that gets interviews.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="CV Help" />
-                  <div>
-                    <strong>CV Help</strong>
-                    <p>Improve your CV with help from expert guides.</p>
-                  </div>
+              <div className="tool-item" onClick={() => handleNavigate("/homepage")}>
+                <img src="coverletter.png" alt="CV Builder" />
+                <div>
+                  <strong>CV Builder</strong>
+                  <p>Create a CV in 5 minutes. Get the job you want.</p>
                 </div>
               </div>
+              <hr />
+              <div className="tool-item" onClick={() => handleNavigate("/cv-examples")}>
+                <img src="download (1).png" alt="CV Examples" />
+                <div>
+                  <strong>CV Examples</strong>
+                  <p>See perfect CV samples that get jobs.</p>
+                </div>
+              </div>
+              <hr />
+              <div className="tool-item" onClick={() => handleNavigate("/cv-help")}>
+                <img src="download (1).png" alt="CV Help" />
+                <div>
+                  <strong>CV Help</strong>
+                  <p>Improve your CV with help from expert guides.</p>
+                </div>
+              </div>
+            </div>
+            
             )}
           </div>
 
@@ -227,33 +169,26 @@ const Header = () => {
           {/* Blog Dropdown */}
           <div className="nav-item">
             <span className="nav-link" onClick={toggleBlogCard}>
-              Blog <span className="dropdown-icon">▼</span>
+              Pricing  <span className="dropdown-icon">▼</span>
             </span>
             {showBlog && (
-              <div className="tools-card">
-                <div className="tool-item">
-                  <img src="coverletter.png" alt="Latest Blog" />
-                  <div>
-                    <strong>Latest Blog</strong>
-                    <p>Check out our latest blog posts on job hunting.</p>
-                  </div>
+             <div className="tools-card">
+             <div className="tool-item" onClick={() => handleNavigate("/pricing-offers")}>
+               <img src="coverletter.png" alt="Latest Blog" />
+               <div>
+                 <strong>Pricing offer</strong>
+                 <p>Check out our latest blog posts on job hunting.</p>
+               </div>
+             </div>
+             <hr />
+             <div className="tool-item" onClick={() => handleNavigate("/payment")}>
+               <img src="download (1).png" alt="Blog Categories" />
+               <div>
+                 <strong>Payment</strong>
+                 <p>Explore various categories for your job search.</p>
+               </div>
                 </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="Blog Categories" />
-                  <div>
-                    <strong>Blog Categories</strong>
-                    <p>Explore various categories for your job search.</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="tool-item">
-                  <img src="download (1).png" alt="Tips" />
-                  <div>
-                    <strong>Tips & Advice</strong>
-                    <p>Get helpful tips and advice for your job search.</p>
-                  </div>
-                </div>
+             
               </div>
             )}
           </div>
@@ -261,22 +196,15 @@ const Header = () => {
           {/* About Dropdown */}
           <div className="nav-item">
             <span className="nav-link" onClick={toggleAboutCard}>
-              About <span className="dropdown-icon">▼</span>
+            Setting <span className="dropdown-icon">▼</span>
             </span>
             {showAbout && (
               <div className="tools-card">
-                <div className="tool-item">
-                  <img src="coverletter.png" alt="About Us" />
-                  <div>
-                    <strong>About Us</strong>
-                    <p>Learn more about our mission and team.</p>
-                  </div>
-                </div>
-                <hr />
+             
                 <div className="tool-item">
                   <img src="download (1).png" alt="Contact" />
                   <div>
-                    <strong>Contact</strong>
+                    <strong>Account Setting</strong>
                     <p>Get in touch with us for any inquiries.</p>
                   </div>
                 </div>
